@@ -1,0 +1,1037 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Đấu Trí Học Đường - Live Quiz Extravaganza</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- QR Code Generator Library -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+    <!-- Canvas Confetti -->
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>    <!-- Tone.js for dynamic Synthesized Sound Effects -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/tone/14.8.49/Tone.js"></script>
+
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600;700&family=Nunito:wght@400;600;700;800;900&display=swap');
+
+        body {
+            font-family: 'Nunito', sans-serif;
+            background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 50%, #db2777 100%);
+            min-height: 100vh;
+        }
+
+        .font-heading {
+            font-family: 'Fredoka', cursive;
+        }
+
+        .glass-card {
+            background: rgba(255, 255, 255, 0.92);
+            backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.4);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+        }
+
+        .glass-card-dark {
+            background: rgba(15, 23, 42, 0.88);
+            backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .btn-bounce {
+            transition: all 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+        .btn-bounce:hover {
+            transform: translateY(-4px) scale(1.02);
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.3);
+        }
+        .btn-bounce:active {
+            transform: translateY(2px) scale(0.98);
+        }
+
+        .pulse-glow {
+            animation: pulseGlow 2s infinite alternate;
+        }
+        @keyframes pulseGlow {
+            0% { box-shadow: 0 0 15px rgba(236, 72, 153, 0.5); }
+            100% { box-shadow: 0 0 35px rgba(236, 72, 153, 0.9); }
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: rgba(0, 0, 0, 0.1);
+            border-radius: 10px;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.5);
+            border-radius: 10px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: rgba(255, 255, 255, 0.8);
+        }
+    </style>
+</head>
+<body class="text-slate-800 flex flex-col min-h-screen">
+
+    <!-- Header Navigation Bar -->
+    <header class="w-full bg-white/10 backdrop-blur-md border-b border-white/20 py-3 px-4 sm:px-8 flex justify-between items-center z-50 sticky top-0">
+        <div class="flex items-center space-x-3 cursor-pointer" onclick="switchRole('home')">
+            <div class="bg-amber-400 text-indigo-900 w-10 h-10 rounded-2xl flex items-center justify-center font-bold text-2xl shadow-lg">
+                <i class="fa-solid fa-gamepad"></i>
+            </div>
+            <div>
+                <h1 class="font-heading text-xl sm:text-2xl font-black text-white tracking-wide leading-none">ĐẤU TRÍ HỌC ĐƯỜNG</h1>
+                <p class="text-xs text-amber-300 font-bold uppercase tracking-wider">Hoạt Động Ngoại Khóa Toàn Trường</p>
+            </div>
+        </div>
+
+        <!-- System Audio & Mode Toggle Controls -->
+        <div class="flex items-center space-x-3">
+            <button id="soundToggleBtn" onclick="toggleMute()" class="bg-white/20 hover:bg-white/30 text-white p-2.5 px-4 rounded-xl font-bold flex items-center space-x-2 transition border border-white/30">
+                <i id="soundIcon" class="fa-solid fa-volume-high text-amber-300"></i>
+                <span class="hidden sm:inline text-sm">Âm thanh</span>
+            </button>
+            <div id="roleBadge" class="bg-amber-400 text-slate-900 font-extrabold px-3 py-1.5 rounded-xl text-xs sm:text-sm uppercase shadow">
+                Học Sinh Mode
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Container -->
+    <main class="flex-grow container mx-auto px-4 py-6 flex flex-col justify-center items-center">
+
+        <!-- ================= PAGE 1: HOME / LANDING SELECTION ================= -->
+        <div id="homeScreen" class="w-full max-w-4xl text-center space-y-8 py-8">
+            <div class="space-y-4">
+                <span class="bg-amber-400/20 text-amber-300 border border-amber-400/40 px-4 py-1.5 rounded-full text-sm font-bold tracking-wide uppercase inline-block shadow-sm">
+                    🚀 Hỗ trợ lên đến 1500+ Học Sinh Tham Gia Cùng Lúc
+                </span>
+                <h2 class="font-heading text-4xl sm:text-6xl font-extrabold text-white leading-tight drop-shadow-md">
+                    SÂN CHƠI TRI THỨC <br>
+                    <span class="text-transparent bg-clip-text bg-gradient-to-r from-amber-300 via-amber-200 to-yellow-400">BỨC PHÁ VỮNG BƯỚC</span>
+                </h2>
+                <p class="text-indigo-100 text-lg max-w-2xl mx-auto">
+                    Nhanh tay tham gia đấu trí với hàng ngàn học sinh toàn trường. Quét mã QR hoặc nhập PIN phòng để thi đấu ngay!
+                </p>
+            </div>
+
+            <!-- Choice Cards -->
+            <div class="grid md:grid-cols-2 gap-6 max-w-3xl mx-auto pt-4">
+                <!-- Join as Student -->
+                <div class="glass-card p-8 rounded-3xl text-left border-2 border-white/50 flex flex-col justify-between hover:border-amber-400 transition group">
+                    <div>
+                        <div class="w-16 h-16 bg-gradient-to-tr from-pink-500 to-rose-400 rounded-2xl flex items-center justify-center text-white text-3xl mb-6 shadow-lg group-hover:scale-110 transition">
+                            <i class="fa-solid fa-user-graduate"></i>
+                        </div>
+                        <h3 class="font-heading text-2xl font-bold text-slate-800 mb-2">Dành Cho Học Sinh</h3>
+                        <p class="text-slate-600 text-sm mb-6">Nhập tên và Mã PIN phòng đấu để bắt đầu chinh phục bộ câu hỏi!</p>
+                    </div>
+                    <button onclick="switchRole('student')" class="w-full bg-gradient-to-r from-pink-500 to-rose-500 hover:from-pink-600 hover:to-rose-600 text-white font-extrabold py-4 px-6 rounded-2xl btn-bounce text-lg shadow-lg flex items-center justify-center space-x-2">
+                        <span>THAM GIA VÀO PHÒNG</span>
+                        <i class="fa-solid fa-arrow-right"></i>
+                    </button>
+                </div>
+
+                <!-- Host/Admin Portal -->
+                <div class="glass-card p-8 rounded-3xl text-left border-2 border-white/50 flex flex-col justify-between hover:border-indigo-400 transition group">
+                    <div>
+                        <div class="w-16 h-16 bg-gradient-to-tr from-indigo-500 to-purple-500 rounded-2xl flex items-center justify-center text-white text-3xl mb-6 shadow-lg group-hover:scale-110 transition">
+                            <i class="fa-solid fa-desktop"></i>
+                        </div>
+                        <h3 class="font-heading text-2xl font-bold text-slate-800 mb-2">Bảng Điều Khiển Ban Tổ Chức</h3>
+                        <p class="text-slate-600 text-sm mb-6">Mở phòng đấu, hiển thị mã QR trên máy chiếu trường, theo dõi thời gian và xếp hạng realtime!</p>
+                    </div>
+                    <button onclick="switchRole('host')" class="w-full bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 text-white font-extrabold py-4 px-6 rounded-2xl btn-bounce text-lg shadow-lg flex items-center justify-center space-x-2">
+                        <span>MỞ BẢNG ĐIỀU KHIỂN SÂN TRƯỜNG</span>
+                        <i class="fa-solid fa-qrcode"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- ================= PAGE 2: STUDENT JOIN & PLAY SCREEN ================= -->
+        <div id="studentScreen" class="w-full max-w-2xl hidden">
+            <!-- Login Form -->
+            <div id="studentLoginForm" class="glass-card p-8 rounded-3xl shadow-2xl space-y-6">
+                <div class="text-center space-y-2">
+                    <div class="w-16 h-16 bg-amber-400 text-indigo-950 rounded-full flex items-center justify-center text-3xl font-black mx-auto shadow-md">
+                        <i class="fa-solid fa-bolt"></i>
+                    </div>
+                    <h2 class="font-heading text-3xl font-black text-slate-800">Sẵn Sàng Thi Đấu!</h2>
+                    <p class="text-slate-500 text-sm">Điền tên và Mã PIN hiển thị trên màn hình sân trường</p>
+                </div>
+
+                <div class="space-y-4">
+                    <div>
+                        <label class="block text-xs font-black uppercase text-slate-500 mb-1">Mã PIN Phòng Đấu</label>
+                        <input type="text" id="pinInput" placeholder="Ví dụ: 888999" maxlength="6" value="888999" class="w-full px-4 py-3.5 bg-slate-100 border-2 border-slate-200 rounded-2xl text-center text-2xl font-black tracking-widest text-indigo-900 focus:outline-none focus:border-indigo-500 transition">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-black uppercase text-slate-500 mb-1">Họ Và Tên Học Sinh / Lớp</label>
+                        <input type="text" id="playerNameInput" placeholder="Ví dụ: Nguyễn Văn An - 11A1" class="w-full px-4 py-3.5 bg-slate-100 border-2 border-slate-200 rounded-2xl text-base font-bold text-slate-800 focus:outline-none focus:border-indigo-500 transition">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-black uppercase text-slate-500 mb-1">Chọn Nhóm Lớp Thi Đấu</label>
+                        <select id="gradeSelect" class="w-full px-4 py-3.5 bg-slate-100 border-2 border-slate-200 rounded-2xl text-base font-bold text-slate-800 focus:outline-none focus:border-indigo-500 transition">
+                            <option value="Khối 10">Khối 10</option>
+                            <option value="Khối 11">Khối 11</option>
+                            <option value="Khối 12">Khối 12</option>
+                        </select>
+                    </div>
+                </div>
+
+                <button onclick="startStudentGame()" class="w-full bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-600 hover:to-teal-700 text-white font-extrabold py-4 rounded-2xl btn-bounce text-xl shadow-lg flex items-center justify-center space-x-2">
+                    <i class="fa-solid fa-play"></i>
+                    <span>BẮT ĐẦU CHƠI NGAY</span>
+                </button>
+            </div>
+
+            <!-- Quiz Playing Interface -->
+            <div id="studentQuizArea" class="hidden space-y-6">
+                <!-- Status Header -->
+                <div class="glass-card p-4 rounded-2xl flex justify-between items-center">
+                    <div class="flex items-center space-x-3">
+                        <div class="w-10 h-10 bg-indigo-600 text-white rounded-xl flex items-center justify-center font-bold">
+                            <i class="fa-solid fa-user"></i>
+                        </div>
+                        <div>
+                            <div id="quizPlayerName" class="font-extrabold text-slate-800 leading-tight">Học sinh</div>
+                            <div class="text-xs font-semibold text-slate-500">Điểm: <span id="quizPlayerScore" class="text-emerald-600 font-bold">0</span></div>
+                        </div>
+                    </div>
+
+                    <!-- Room Timer Countdown -->
+                    <div class="text-right">
+                        <div class="text-xs font-extrabold text-rose-500 uppercase tracking-wider">Thời gian còn lại phòng</div>
+                        <div id="studentRoomTimer" class="font-heading text-xl font-black text-rose-600">15:00</div>
+                    </div>
+                </div>
+
+                <!-- Main Question Card -->
+                <div class="glass-card p-6 sm:p-8 rounded-3xl space-y-6 shadow-2xl relative overflow-hidden">
+                    <div class="flex justify-between items-center text-sm font-black text-indigo-600">
+                        <span id="questionProgress" class="bg-indigo-50 px-3 py-1 rounded-full border border-indigo-200">Câu hỏi 1/10</span>
+                        <span id="attemptCount" class="bg-amber-50 text-amber-700 px-3 py-1 rounded-full border border-amber-200">Lượt tham gia: 1</span>
+                    </div>
+
+                    <h3 id="questionText" class="font-heading text-xl sm:text-2xl font-bold text-slate-800 min-h-[4rem]">
+                        Nội dung câu hỏi sẽ hiển thị ở đây...
+                    </h3>
+
+                    <!-- Dynamic Options Grid -->
+                    <div id="optionsGrid" class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        <!-- Options generated dynamically -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- Quiz Complete / Replay Screen -->
+            <div id="quizResultArea" class="hidden glass-card p-8 rounded-3xl text-center space-y-6 shadow-2xl">
+                <div class="w-20 h-20 bg-emerald-500 text-white rounded-full flex items-center justify-center text-4xl mx-auto shadow-lg pulse-glow">
+                    <i class="fa-solid fa-trophy"></i>
+                </div>
+                <div>
+                    <h3 class="font-heading text-3xl font-black text-slate-800">HOÀN THÀNH LƯỢT THI!</h3>
+                    <p class="text-slate-500 text-sm mt-1">Kết quả lượt thi của bạn đã được cập nhật hệ thống</p>
+                </div>
+
+                <div class="grid grid-cols-2 gap-4 bg-slate-100/80 p-4 rounded-2xl">
+                    <div class="text-center">
+                        <span class="text-xs font-bold text-slate-500 uppercase">Điểm Lượt Này</span>
+                        <div id="finalScore" class="text-3xl font-black text-indigo-600">0</div>
+                    </div>
+                    <div class="text-center">
+                        <span class="text-xs font-bold text-slate-500 uppercase">Thời Gian Hoàn Thành</span>
+                        <div id="finalTime" class="text-3xl font-black text-emerald-600">0s</div>
+                    </div>
+                </div>
+
+                <div class="text-sm text-slate-600 font-semibold bg-amber-50 p-4 rounded-2xl border border-amber-200">
+                    💡 <span class="font-bold">Mẹo:</span> Thời gian phòng thi vẫn còn! Bạn có thể chơi lại lượt mới với đề thi được xáo trộn tự động hoàn toàn để đạt điểm số cao hơn!
+                </div>
+
+                <button onclick="replayGame()" class="w-full bg-gradient-to-r from-amber-400 to-orange-500 hover:from-amber-500 hover:to-orange-600 text-slate-950 font-black py-4 rounded-2xl btn-bounce text-lg shadow-lg flex items-center justify-center space-x-2">
+                    <i class="fa-solid fa-rotate-right"></i>
+                    <span>THAM GIA LƯỢT CHƠI MỚI</span>
+                </button>
+            </div>
+        </div>
+
+        <!-- ================= PAGE 3: HOST / STAGE BIG SCREEN DISPLAY ================= -->
+        <div id="hostScreen" class="w-full max-w-6xl hidden space-y-6">
+
+            <!-- Top Dashboard Bar -->
+            <div class="glass-card-dark p-6 rounded-3xl text-white flex flex-col md:flex-row justify-between items-center gap-6 shadow-2xl border border-white/20">
+                <div class="flex items-center space-x-4">
+                    <div class="bg-indigo-600 p-4 rounded-2xl text-amber-300 text-3xl font-black shadow-inner">
+                        <i class="fa-solid fa-tower-broadcast"></i>
+                    </div>
+                    <div>
+                        <div class="text-xs uppercase font-extrabold text-indigo-300 tracking-wider">Trạng Thái Sân Trường</div>
+                        <h2 class="font-heading text-2xl sm:text-3xl font-black text-white" id="roomStatusText">PHÒNG THI ĐANG MỞ (1500 CHỖ)</h2>
+                    </div>
+                </div>
+
+                <!-- Stats Overview -->
+                <div class="flex flex-wrap gap-4 sm:gap-6 justify-center">
+                    <div class="bg-white/10 px-5 py-3 rounded-2xl text-center border border-white/10">
+                        <div class="text-xs font-bold text-slate-300">Tổng Đã Tham Gia</div>
+                        <div id="statTotalJoined" class="text-2xl sm:text-3xl font-black text-amber-400">1,248</div>
+                    </div>
+                    <div class="bg-white/10 px-5 py-3 rounded-2xl text-center border border-white/10">
+                        <div class="text-xs font-bold text-slate-300">Đang Thi Đấu</div>
+                        <div id="statActivePlaying" class="text-2xl sm:text-3xl font-black text-emerald-400">412</div>
+                    </div>
+                    <div class="bg-white/10 px-5 py-3 rounded-2xl text-center border border-white/10">
+                        <div class="text-xs font-bold text-slate-300">Đếm Nguợc Đóng Phòng</div>
+                        <div id="hostCountdown" class="text-2xl sm:text-3xl font-black text-rose-400">15:00</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Host Main Content Grid -->
+            <div class="grid lg:grid-cols-3 gap-6">
+
+                <!-- Left Column: QR Code & Pin for Projection -->
+                <div class="glass-card p-6 rounded-3xl text-center space-y-6 flex flex-col justify-between">
+                    <div>
+                        <h3 class="font-heading text-xl font-black text-slate-800">QUÉT QR ĐỂ THAM GIA</h3>
+                        <p class="text-xs text-slate-500 mt-1">Dành cho học sinh dùng điện thoại cá nhân / máy tính bảng</p>
+                    </div>
+
+                    <!-- Dynamic QR Container -->
+                    <div class="bg-white p-4 rounded-2xl shadow-inner inline-block mx-auto border-4 border-indigo-50" id="qrcode"></div>
+
+                    <!-- Big PIN Display -->
+                    <div class="bg-slate-900 text-white p-4 rounded-2xl space-y-1">
+                        <span class="text-xs uppercase font-bold text-slate-400 tracking-wider">MÃ PIN PHÒNG</span>
+                        <div class="font-heading text-4xl font-black text-amber-400 tracking-widest" id="stagePinDisplay">888999</div>
+                    </div>
+
+                    <!-- Host Controls -->
+                    <div class="space-y-2 pt-2">
+                        <button id="closeRoomBtn" onclick="closeRoomManually()" class="w-full bg-rose-600 hover:bg-rose-700 text-white font-extrabold py-3.5 rounded-2xl btn-bounce shadow flex items-center justify-center space-x-2">
+                            <i class="fa-solid fa-lock"></i>
+                            <span>ĐÓNG PHÒNG THI & KẾT QUẢ TOP 10</span>
+                        </button>
+                        <button onclick="resetWholeRoom()" class="w-full bg-slate-200 hover:bg-slate-300 text-slate-700 font-bold py-2.5 rounded-2xl text-xs flex items-center justify-center space-x-2">
+                            <i class="fa-solid fa-arrows-rotate"></i>
+                            <span>Tạo Phòng Đấu Mới</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Right Column: Live Realtime Leaderboard (Top 10 Display) -->
+                <div class="lg:col-span-2 glass-card p-6 rounded-3xl space-y-4 flex flex-col">
+                    <div class="flex justify-between items-center">
+                        <div class="flex items-center space-x-3">
+                            <div class="w-8 h-8 bg-amber-400 text-slate-900 rounded-lg flex items-center justify-center font-bold">
+                                <i class="fa-solid fa-trophy"></i>
+                            </div>
+                            <h3 class="font-heading text-xl font-black text-slate-800">BẢNG XẾP HẠNG REALTIME (TOP 10)</h3>
+                        </div>
+                        <span class="text-xs font-bold text-slate-500 bg-slate-100 px-3 py-1 rounded-full flex items-center gap-1">
+                            <span class="w-2 h-2 rounded-full bg-emerald-500 animate-ping"></span> Live Update
+                        </span>
+                    </div>
+
+                    <!-- Leaderboard Table List -->
+                    <div id="leaderboardList" class="space-y-2 flex-grow overflow-y-auto max-h-[460px] pr-1">
+                        <!-- Top players list rendered dynamically -->
+                    </div>
+                </div>
+
+            </div>
+
+        </div>
+
+    </main>
+
+    <!-- Modal Podium Top 10 Celebration Gameshow Winner (Trang trọng Gameshow) -->
+    <div id="winnerModal" class="fixed inset-0 bg-slate-950/90 backdrop-blur-xl z-50 hidden flex items-center justify-center p-4">
+        <div class="glass-card-dark text-white p-8 rounded-3xl max-w-4xl w-full border border-amber-400/40 text-center space-y-6 relative overflow-hidden shadow-2xl">
+
+            <div class="space-y-2">
+                <span class="bg-amber-400 text-slate-950 font-black px-4 py-1.5 rounded-full text-xs uppercase tracking-widest inline-block shadow">
+                    🎉 LỄ VẬN HÀNH TRAO GIẢI TOÀN TRƯỜNG 🎉
+                </span>
+                <h2 class="font-heading text-4xl sm:text-5xl font-black text-transparent bg-clip-text bg-gradient-to-r from-yellow-300 via-amber-200 to-amber-500">
+                    VINH DANH TOP 10 XUẤT SẮC NHẤT
+                </h2>
+            </div>
+
+            <!-- Top 3 Podium Graphics -->
+            <div class="grid grid-cols-3 gap-3 sm:gap-6 items-end pt-6 pb-2" id="podiumContainer">
+                <!-- Rank 2 -->
+                <div class="space-y-2">
+                    <div id="podium2Name" class="font-bold text-slate-200 text-sm sm:text-base truncate">---</div>
+                    <div id="podium2Score" class="text-xs text-amber-300 font-extrabold">0 pts</div>
+                    <div class="bg-gradient-to-t from-slate-700 to-slate-500 h-28 sm:h-36 rounded-t-2xl flex flex-col justify-between p-3 border-t-4 border-slate-300 shadow-lg">
+                        <span class="text-3xl sm:text-4xl">🥈</span>
+                        <span class="font-black text-xl sm:text-2xl">HẠNG 2</span>
+                    </div>
+                </div>
+
+                <!-- Rank 1 (Gold Winner) -->
+                <div class="space-y-2">
+                    <div class="inline-block bg-amber-400 text-slate-950 text-xs font-black px-2 py-0.5 rounded-full animate-bounce">QUÁN QUÂN</div>
+                    <div id="podium1Name" class="font-black text-amber-300 text-base sm:text-xl truncate">---</div>
+                    <div id="podium1Score" class="text-xs sm:text-sm text-yellow-200 font-extrabold">0 pts</div>
+                    <div class="bg-gradient-to-t from-amber-600 to-yellow-400 h-36 sm:h-48 rounded-t-2xl flex flex-col justify-between p-3 border-t-4 border-yellow-200 shadow-2xl">
+                        <span class="text-4xl sm:text-5xl">🏆</span>
+                        <span class="font-black text-2xl sm:text-3xl text-slate-950">HẠNG 1</span>
+                    </div>
+                </div>
+
+                <!-- Rank 3 -->
+                <div class="space-y-2">
+                    <div id="podium3Name" class="font-bold text-slate-200 text-sm sm:text-base truncate">---</div>
+                    <div id="podium3Score" class="text-xs text-amber-300 font-extrabold">0 pts</div>
+                    <div class="bg-gradient-to-t from-amber-800 to-amber-700 h-24 sm:h-28 rounded-t-2xl flex flex-col justify-between p-3 border-t-4 border-amber-600 shadow-lg">
+                        <span class="text-3xl sm:text-4xl">🥉</span>
+                        <span class="font-black text-lg sm:text-xl">HẠNG 3</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Ranks 4 to 10 List -->
+            <div class="bg-slate-900/80 p-4 rounded-2xl border border-white/10">
+                <h4 class="text-xs font-black uppercase text-slate-400 mb-3 tracking-wider text-left">Các Bạn Còn Lại Trong Top 10</h4>
+                <div id="remainingTop10" class="grid grid-cols-1 sm:grid-cols-2 gap-2 text-left text-xs sm:text-sm">
+                    <!-- Dynamic Top 4-10 -->
+                </div>
+            </div>
+
+            <div class="flex justify-center gap-4">
+                <button onclick="closeWinnerModal()" class="bg-slate-700 hover:bg-slate-600 text-white font-bold py-3 px-8 rounded-2xl btn-bounce text-sm">
+                    Đóng Cửa Sổ
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Notification Toast -->
+    <div id="toast" class="fixed bottom-5 right-5 bg-slate-900 text-white px-6 py-4 rounded-2xl shadow-2xl border border-white/20 transform translate-y-32 transition-transform duration-300 z-50 flex items-center space-x-3">
+        <i id="toastIcon" class="fa-solid fa-circle-info text-amber-400 text-xl"></i>
+        <span id="toastMsg" class="font-bold text-sm">Thông báo hệ thống</span>
+    </div>
+
+    <script>
+        /* ==========================================================================
+           1. GAME QUESTION BANK & QUESTION RANDOMIZER ENGINE
+           ========================================================================== */
+        const QUESTION_POOL = [
+            {
+                q: "Hành tinh nào gần Mặt Trời nhất trong Hệ Mặt Trời?",
+                options: ["Sao Thủy", "Sao Kim", "Trái Đất", "Sao Hỏa"],
+                correct: 0
+            },
+            {
+                q: "Ai là tác giả của tác phẩm văn học vĩ đại 'Truyện Kiều'?",
+                options: ["Nguyễn Trãi", "Nguyễn Du", "Hồ Xuân Hương", "Đoàn Thị Điểm"],
+                correct: 1
+            },
+            {
+                q: "Đơn vị đo cường độ dòng điện trong hệ SI là gì?",
+                options: ["Volt (V)", "Watt (W)", "Ampere (A)", "Ohm (Ω)"],
+                correct: 2
+            },
+            {
+                q: "Chiến thắng Điện Biên Phủ lừng lẫy năm châu diễn ra vào năm nào?",
+                options: ["1945", "1954", "1968", "1975"],
+                correct: 1
+            },
+            {
+                q: "Công thức hóa học của Muối Ăn là gì?",
+                options: ["NaCl", "KCl", "NaOH", "HCl"],
+                correct: 0
+            },
+            {
+                q: "Ngôn ngữ lập trình phổ biến nào dùng phổ biến cho phát triển Web Frontend?",
+                options: ["Python", "C++", "JavaScript", "Java"],
+                correct: 2
+            },
+            {
+                q: "Đỉnh núi nào cao nhất thế giới hiện nay?",
+                options: ["Đỉnh Fansipan", "Đỉnh Everest", "Đỉnh K2", "Đỉnh Fuji"],
+                correct: 1
+            },
+            {
+                q: "Đại dương nào có diện tích lớn nhất trên Trái Đất?",
+                options: ["Đại Tây Dương", "Ấn Độ Dương", "Bắc Băng Dương", "Thái Bình Dương"],
+                correct: 3
+            },
+            {
+                q: "Bộ phận nào trong tế bào thực vật chịu trách nhiệm quang hợp?",
+                options: ["Nhân tế bào", "Lục lạp", "Ti thể", "Vách tế bào"],
+                correct: 1
+            },
+            {
+                q: "Quốc gia nào có diện tích lãnh thổ lớn nhất thế giới?",
+                options: ["Trung Quốc", "Mỹ", "Nga", "Canada"],
+                correct: 2
+            },
+            {
+                q: "Phần mềm nào sau đây là hệ điều hành mã nguồn mở?",
+                options: ["Windows 11", "macOS", "Linux", "iOS"],
+                correct: 2
+            },
+            {
+                q: "Tác phẩm 'Hịch tướng sĩ' do ai sáng tác?",
+                options: ["Trần Hưng Đạo", "Lý Thường Kiệt", "Quang Trung", "Lê Lợi"],
+                correct: 0
+            }
+        ];
+
+        /* ==========================================================================
+           2. GLOBAL STATE & SYSTEM VARIABLES
+           ========================================================================== */
+        let state = {
+            role: 'home',
+            roomPin: '888999',
+            isRoomOpen: true,
+            totalTimeSeconds: 15 * 60, // 15 Minutes
+            remainingSeconds: 15 * 60,
+            timerInterval: null,
+            soundEnabled: true,
+
+            // Simulated Mass Student Data (Scaled up to 1500 simulation capacity)
+            totalJoinedCount: 1248,
+            activePlayingCount: 412,
+            players: [],
+
+            // Current Active Student Session
+            currentPlayer: {
+                name: '',
+                grade: 'Khối 10',
+                score: 0,
+                attempts: 0,
+                currentQIndex: 0,
+                shuffledQuestions: [],
+                startTime: null
+            }
+        };
+
+        // Synthesizer Audio Engine (Tone.js)
+        let soundEngine = {
+            synth: null,
+            poly: null,
+            init: function() {
+                try {
+                    this.synth = new Tone.Synth().toDestination();
+                    this.poly = new Tone.PolySynth().toDestination();
+                } catch(e) {}
+            },
+            playCorrect: function() {
+                if (!state.soundEnabled) return;
+                try {
+                    Tone.start();
+                    const now = Tone.now();
+                    this.poly.triggerAttackRelease(["C5", "E5", "G5", "C6"], "8n", now);
+                } catch(e){}
+            },
+            playWrong: function() {
+                if (!state.soundEnabled) return;
+                try {
+                    Tone.start();
+                    const now = Tone.now();
+                    this.synth.triggerAttackRelease("A3", "8n", now);
+                } catch(e){}
+            },
+            playTick: function() {
+                if (!state.soundEnabled) return;
+                try {
+                    this.synth.triggerAttackRelease("C3", "32n");
+                } catch(e){}
+            },
+            playWinnerFanfare: function() {
+                if (!state.soundEnabled) return;
+                try {
+                    Tone.start();
+                    const now = Tone.now();
+                    this.poly.triggerAttackRelease(["C4", "E4", "G4"], "8n", now);
+                    this.poly.triggerAttackRelease(["G4", "B4", "D5"], "8n", now + 0.2);
+                    this.poly.triggerAttackRelease(["C5", "E5", "G5", "C6"], "4n", now + 0.4);
+                } catch(e){}
+            }
+        };
+
+        /* ==========================================================================
+           3. SIMULATION & DYNAMIC PLAYER GENERATOR (FOR 1500 USERS REALISM)
+           ========================================================================== */
+        function initMockLeaderboardData() {
+            const sampleNames = [
+                "Trần Minh Anh", "Lê Hoàng Nam", "Nguyễn Thảo Nhi", "Phạm Quốc Bảo", 
+                "Đỗ Gia Huy", "Vũ Phương Thảo", "Bùi Khánh Linh", "Đặng Tuấn Kiệt",
+                "Phan Đức Anh", "Hoàng Kim Ngân", "Ngô Tấn Phát", "Lương Hải Yến",
+                "Trịnh Như Ý", "Dương Quốc Trung", "Hồ Minh Châu"
+            ];
+            const grades = ["Khối 10", "Khối 11", "Khối 12"];
+
+            state.players = [];
+            for (let i = 0; i < 25; i++) {
+                const randomName = sampleNames[i % sampleNames.length] + " (" + (i+1) + ")";
+                const randomGrade = grades[Math.floor(Math.random() * grades.length)];
+                const randomScore = Math.floor(Math.random() * 40) * 250 + 1000;
+                const randomTime = Math.floor(Math.random() * 45) + 30; // seconds
+
+                state.players.push({
+                    id: 'sim_' + i,
+                    name: randomName,
+                    grade: randomGrade,
+                    score: randomScore,
+                    timeUsed: randomTime,
+                    timestamp: Date.now() - Math.floor(Math.random() * 600000)
+                });
+            }
+            sortPlayers();
+        }
+
+        function sortPlayers() {
+            state.players.sort((a, b) => {
+                if (b.score !== a.score) {
+                    return b.score - a.score; // Điểm cao hơn xếp trên
+                }
+                return a.timeUsed - b.timeUsed; // Thời gian ít hơn xếp trên
+            });
+        }
+
+        /* ==========================================================================
+           4. NAVIGATION & ROLE SWITCHING logic
+           ========================================================================== */
+        function switchRole(newRole) {
+            state.role = newRole;
+
+            // Hide all screens
+            document.getElementById('homeScreen').classList.add('hidden');
+            document.getElementById('studentScreen').classList.add('hidden');
+            document.getElementById('hostScreen').classList.add('hidden');
+
+            const badge = document.getElementById('roleBadge');
+
+            if (newRole === 'home') {
+                document.getElementById('homeScreen').classList.remove('hidden');
+                badge.innerText = "Trang Chủ";
+                badge.className = "bg-amber-400 text-slate-900 font-extrabold px-3 py-1.5 rounded-xl text-xs sm:text-sm uppercase shadow";
+            } 
+            else if (newRole === 'student') {
+                document.getElementById('studentScreen').classList.remove('hidden');
+                badge.innerText = "Chế Độ Học Sinh";
+                badge.className = "bg-pink-500 text-white font-extrabold px-3 py-1.5 rounded-xl text-xs sm:text-sm uppercase shadow";
+            } 
+            else if (newRole === 'host') {
+                document.getElementById('hostScreen').classList.remove('hidden');
+                badge.innerText = "Chế Độ Ban Tổ Chức";
+                badge.className = "bg-indigo-600 text-white font-extrabold px-3 py-1.5 rounded-xl text-xs sm:text-sm uppercase shadow";
+                generateQRCode();
+                renderLeaderboard();
+            }
+        }
+
+        /* ==========================================================================
+           5. TIMER & ROOM COUNTDOWN SYSTEM
+           ========================================================================== */
+        function startRoomTimer() {
+            if (state.timerInterval) clearInterval(state.timerInterval);
+
+            state.timerInterval = setInterval(() => {
+                if (state.remainingSeconds > 0 && state.isRoomOpen) {
+                    state.remainingSeconds--;
+                    updateTimerDisplays();
+
+                    // Dynamic background player score updates to simulate live action
+                    if (Math.random() < 0.3) {
+                        simulateLiveTraffic();
+                    }
+                } else if (state.remainingSeconds <= 0 && state.isRoomOpen) {
+                    closeRoomAutomatically();
+                }
+            }, 1000);
+        }
+
+        function updateTimerDisplays() {
+            const minutes = Math.floor(state.remainingSeconds / 60);
+            const seconds = state.remainingSeconds % 60;
+            const formatted = `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+
+            document.getElementById('studentRoomTimer').innerText = formatted;
+            document.getElementById('hostCountdown').innerText = formatted;
+        }
+
+        function simulateLiveTraffic() {
+            // Randomly increment simulated participants
+            state.totalJoinedCount += Math.floor(Math.random() * 3) + 1;
+            state.activePlayingCount = Math.floor(state.totalJoinedCount * 0.35);
+
+            document.getElementById('statTotalJoined').innerText = state.totalJoinedCount.toLocaleString();
+            document.getElementById('statActivePlaying').innerText = state.activePlayingCount.toLocaleString();
+
+            // Randomly update random player score to make leaderboard dynamic
+            if (state.players.length > 5) {
+                const idx = Math.floor(Math.random() * state.players.length);
+                state.players[idx].score += 50;
+                sortPlayers();
+                if (state.role === 'host') renderLeaderboard();
+            }
+        }
+
+        function closeRoomManually() {
+            if (confirm("Bạn có chắc chắn muốn đóng phòng đấu và vinh danh Top 10 ngay lập tức?")) {
+                closeRoomAutomatically();
+            }
+        }
+
+        function closeRoomAutomatically() {
+            state.isRoomOpen = false;
+            document.getElementById('roomStatusText').innerText = "PHÒNG ĐÃ ĐÓNG THI ĐẤU";
+            document.getElementById('closeRoomBtn').disabled = true;
+            document.getElementById('closeRoomBtn').classList.add('opacity-50', 'cursor-not-allowed');
+
+            showToast("Phòng đấu đã đóng! Đang hiển thị kết quả Top 10 xuất sắc nhất...");
+            soundEngine.playWinnerFanfare();
+            showWinnerModal();
+        }
+
+        function resetWholeRoom() {
+            if (confirm("Tạo phòng đấu mới? Tất cả điểm số sẽ được làm mới.")) {
+                state.isRoomOpen = true;
+                state.remainingSeconds = 15 * 60;
+                document.getElementById('roomStatusText').innerText = "PHÒNG THI ĐANG MỞ (1500 CHỖ)";
+                document.getElementById('closeRoomBtn').disabled = false;
+                document.getElementById('closeRoomBtn').classList.remove('opacity-50', 'cursor-not-allowed');
+                initMockLeaderboardData();
+                renderLeaderboard();
+                showToast("Đã tạo mới phòng đấu!");
+            }
+        }
+
+        /* ==========================================================================
+           6. STUDENT GAMEPLAY & QUESTION RANDOMIZER LOGIC
+           ========================================================================== */
+        function startStudentGame() {
+            const name = document.getElementById('playerNameInput').value.trim();
+            const pin = document.getElementById('pinInput').value.trim();
+            const grade = document.getElementById('gradeSelect').value;
+
+            if (!state.isRoomOpen) {
+                showToast("Phòng thi hiện đã đóng. Không thể tham gia mới!", "error");
+                return;
+            }
+
+            if (pin !== state.roomPin) {
+                showToast("Mã PIN phòng thi không đúng!", "error");
+                return;
+            }
+
+            if (!name) {
+                showToast("Vui lòng nhập Họ và Tên của bạn!", "error");
+                return;
+            }
+
+            state.currentPlayer.name = name;
+            state.currentPlayer.grade = grade;
+            state.currentPlayer.attempts = 1;
+
+            setupNewQuestionSet();
+
+            document.getElementById('studentLoginForm').classList.add('hidden');
+            document.getElementById('studentQuizArea').classList.remove('hidden');
+            document.getElementById('quizResultArea').classList.add('hidden');
+            document.getElementById('quizPlayerName').innerText = `${name} (${grade})`;
+
+            soundEngine.playTick();
+        }
+
+        // Shuffle Question Pool & Shuffles Options per user per attempt
+        function setupNewQuestionSet() {
+            state.currentPlayer.score = 0;
+            state.currentPlayer.currentQIndex = 0;
+            state.currentPlayer.startTime = Date.now();
+            document.getElementById('quizPlayerScore').innerText = '0';
+
+            // Deep clone and shuffle question bank
+            let clonedPool = JSON.parse(JSON.stringify(QUESTION_POOL));
+            clonedPool.sort(() => Math.random() - 0.5);
+
+            // Take top 8 questions and shuffle options
+            state.currentPlayer.shuffledQuestions = clonedPool.slice(0, 8).map(qItem => {
+                let optionsWithOriginalIndex = qItem.options.map((opt, idx) => ({
+                    text: opt,
+                    isCorrect: idx === qItem.correct
+                }));
+                // Shuffle options
+                optionsWithOriginalIndex.sort(() => Math.random() - 0.5);
+                return {
+                    question: qItem.q,
+                    options: optionsWithOriginalIndex
+                };
+            });
+
+            renderCurrentQuestion();
+        }
+
+        function renderCurrentQuestion() {
+            const currentQ = state.currentPlayer.shuffledQuestions[state.currentPlayer.currentQIndex];
+            const totalQ = state.currentPlayer.shuffledQuestions.length;
+
+            document.getElementById('questionProgress').innerText = `Câu hỏi ${state.currentPlayer.currentQIndex + 1}/${totalQ}`;
+            document.getElementById('attemptCount').innerText = `Lượt tham gia: ${state.currentPlayer.attempts}`;
+            document.getElementById('questionText').innerText = currentQ.question;
+
+            const grid = document.getElementById('optionsGrid');
+            grid.innerHTML = '';
+
+            const colors = [
+                'from-blue-500 to-indigo-600 hover:from-blue-600 hover:to-indigo-700',
+                'from-emerald-500 to-teal-600 hover:from-emerald-600 hover:to-teal-700',
+                'from-amber-500 to-orange-600 hover:from-amber-600 hover:to-orange-700',
+                'from-purple-500 to-pink-600 hover:from-purple-600 hover:to-pink-700'
+            ];
+
+            currentQ.options.forEach((opt, idx) => {
+                const btn = document.createElement('button');
+                btn.className = `w-full bg-gradient-to-r ${colors[idx % colors.length]} text-white text-left font-bold p-5 rounded-2xl btn-bounce shadow-md flex items-center space-x-3`;
+                btn.innerHTML = `
+                    <span class="w-8 h-8 bg-white/20 rounded-xl flex items-center justify-center font-black text-sm">${String.fromCharCode(65 + idx)}</span>
+                    <span class="text-base sm:text-lg flex-grow">${opt.text}</span>
+                `;
+                btn.onclick = () => handleAnswerSelect(opt.isCorrect);
+                grid.appendChild(btn);
+            });
+        }
+
+        function handleAnswerSelect(isCorrect) {
+            if (isCorrect) {
+                state.currentPlayer.score += 250;
+                soundEngine.playCorrect();
+                showToast("Chính xác! +250 điểm");
+            } else {
+                soundEngine.playWrong();
+                showToast("Tiếc quá! Câu trả lời chưa đúng.");
+            }
+
+            document.getElementById('quizPlayerScore').innerText = state.currentPlayer.score;
+            state.currentPlayer.currentQIndex++;
+
+            if (state.currentPlayer.currentQIndex < state.currentPlayer.shuffledQuestions.length) {
+                renderCurrentQuestion();
+            } else {
+                finishStudentAttempt();
+            }
+        }
+
+        function finishStudentAttempt() {
+            const timeTaken = Math.round((Date.now() - state.currentPlayer.startTime) / 1000);
+
+            // Record into global leaderboard
+            state.players.push({
+                id: 'usr_' + Date.now(),
+                name: state.currentPlayer.name,
+                grade: state.currentPlayer.grade,
+                score: state.currentPlayer.score,
+                timeUsed: timeTaken,
+                timestamp: Date.now()
+            });
+            sortPlayers();
+
+            document.getElementById('studentQuizArea').classList.add('hidden');
+            document.getElementById('quizResultArea').classList.remove('hidden');
+
+            document.getElementById('finalScore').innerText = state.currentPlayer.score;
+            document.getElementById('finalTime').innerText = `${timeTaken}s`;
+
+            // Trigger confetti
+            confetti({
+                particleCount: 100,
+                spread: 70,
+                origin: { y: 0.6 }
+            });
+        }
+
+        function replayGame() {
+            if (!state.isRoomOpen) {
+                showToast("Phòng thi hiện đã đóng. Bạn không thể thực hiện lượt chơi mới!", "error");
+                return;
+            }
+            state.currentPlayer.attempts++;
+            setupNewQuestionSet();
+            document.getElementById('quizResultArea').classList.add('hidden');
+            document.getElementById('studentQuizArea').classList.remove('hidden');
+        }
+
+        /* ==========================================================================
+           7. HOST LEADERBOARD & QR GENERATOR
+           ========================================================================== */
+        function generateQRCode() {
+            const qrContainer = document.getElementById("qrcode");
+            qrContainer.innerHTML = "";
+            const currentUrl = window.location.href;
+
+            new QRCode(qrContainer, {
+                text: currentUrl,
+                width: 160,
+                height: 160,
+                colorDark : "#0f172a",
+                colorLight : "#ffffff",
+                correctLevel : QRCode.CorrectLevel.H
+            });
+        }
+
+        function renderLeaderboard() {
+            const listContainer = document.getElementById('leaderboardList');
+            listContainer.innerHTML = '';
+
+            const top10 = state.players.slice(0, 10);
+
+            top10.forEach((player, index) => {
+                const rank = index + 1;
+                let badgeStyle = "bg-slate-200 text-slate-800";
+                let rankIcon = `#${rank}`;
+
+                if (rank === 1) {
+                    badgeStyle = "bg-gradient-to-r from-amber-400 to-yellow-500 text-slate-950 font-black shadow-lg scale-105";
+                    rankIcon = "🏆 1";
+                } else if (rank === 2) {
+                    badgeStyle = "bg-gradient-to-r from-slate-300 to-slate-400 text-slate-950 font-bold";
+                    rankIcon = "🥈 2";
+                } else if (rank === 3) {
+                    badgeStyle = "bg-gradient-to-r from-amber-700 to-amber-600 text-white font-bold";
+                    rankIcon = "🥉 3";
+                }
+
+                const item = document.createElement('div');
+                item.className = `flex justify-between items-center p-3.5 rounded-2xl transition border border-slate-100 ${rank <= 3 ? badgeStyle : 'bg-white hover:bg-slate-50'}`;
+
+                item.innerHTML = `
+                    <div class="flex items-center space-x-3">
+                        <span class="w-10 h-10 rounded-xl flex items-center justify-center font-extrabold text-sm ${rank > 3 ? 'bg-indigo-50 text-indigo-700 border border-indigo-100' : ''}">${rankIcon}</span>
+                        <div>
+                            <div class="font-extrabold text-slate-900 text-base leading-tight">${player.name}</div>
+                            <div class="text-xs text-slate-500 font-semibold">${player.grade} • Thời gian: ${player.timeUsed}s</div>
+                        </div>
+                    </div>
+                    <div class="text-right">
+                        <div class="font-black text-indigo-900 text-lg sm:text-xl">${player.score} pts</div>
+                    </div>
+                `;
+                listContainer.appendChild(item);
+            });
+        }
+
+        /* ==========================================================================
+           8. GAMESHOW TOP 10 WINNER CELEBRATION MODAL
+           ========================================================================== */
+        function showWinnerModal() {
+            sortPlayers();
+            const top10 = state.players.slice(0, 10);
+
+            // Rank 1
+            if (top10[0]) {
+                document.getElementById('podium1Name').innerText = top10[0].name;
+                document.getElementById('podium1Score').innerText = `${top10[0].score} pts (${top10[0].timeUsed}s)`;
+            }
+            // Rank 2
+            if (top10[1]) {
+                document.getElementById('podium2Name').innerText = top10[1].name;
+                document.getElementById('podium2Score').innerText = `${top10[1].score} pts (${top10[1].timeUsed}s)`;
+            }
+            // Rank 3
+            if (top10[2]) {
+                document.getElementById('podium3Name').innerText = top10[2].name;
+                document.getElementById('podium3Score').innerText = `${top10[2].score} pts (${top10[2].timeUsed}s)`;
+            }
+
+            // Ranks 4 - 10 Render
+            const remContainer = document.getElementById('remainingTop10');
+            remContainer.innerHTML = '';
+            for (let i = 3; i < 10; i++) {
+                if (top10[i]) {
+                    const p = top10[i];
+                    const div = document.createElement('div');
+                    div.className = "bg-white/10 p-2.5 rounded-xl flex justify-between items-center text-xs";
+                    div.innerHTML = `
+                        <span class="font-bold text-slate-200">#${i+1}. ${p.name} (${p.grade})</span>
+                        <span class="font-extrabold text-amber-300">${p.score} pts</span>
+                    `;
+                    remContainer.appendChild(div);
+                }
+            }
+
+            document.getElementById('winnerModal').classList.remove('hidden');
+
+            // Fire Stage Fireworks Confetti
+            var duration = 4 * 1000;
+            var animationEnd = Date.now() + duration;
+            var defaults = { startVelocity: 30, spread: 360, ticks: 60, zIndex: 60 };
+
+            var interval = setInterval(function() {
+                var timeLeft = animationEnd - Date.now();
+
+                if (timeLeft <= 0) {
+                    return clearInterval(interval);
+                }
+
+                var particleCount = 50 * (timeLeft / duration);
+                confetti(Object.assign({}, defaults, { particleCount, origin: { x: randomInRange(0.1, 0.3), y: Math.random() - 0.2 } }));
+                confetti(Object.assign({}, defaults, { particleCount, origin: { x: randomInRange(0.7, 0.9), y: Math.random() - 0.2 } }));
+            }, 250);
+        }
+
+        function randomInRange(min, max) {
+            return Math.random() * (max - min) + min;
+        }
+
+        function closeWinnerModal() {
+            document.getElementById('winnerModal').classList.add('hidden');
+        }
+
+        /* ==========================================================================
+           9. AUDIO TOGGLE & SYSTEM TOAST HELPERS
+           ========================================================================== */
+        function toggleMute() {
+            state.soundEnabled = !state.soundEnabled;
+            const icon = document.getElementById('soundIcon');
+            if (state.soundEnabled) {
+                icon.className = "fa-solid fa-volume-high text-amber-300";
+                showToast("Đã bật âm thanh trò chơi");
+            } else {
+                icon.className = "fa-solid fa-volume-xmark text-rose-300";
+                showToast("Đã tắt âm thanh");
+            }
+        }
+
+        function showToast(message, type = "info") {
+            const toast = document.getElementById('toast');
+            const toastMsg = document.getElementById('toastMsg');
+            const toastIcon = document.getElementById('toastIcon');
+
+            toastMsg.innerText = message;
+            if (type === "error") {
+                toastIcon.className = "fa-solid fa-circle-exclamation text-rose-400 text-xl";
+            } else {
+                toastIcon.className = "fa-solid fa-circle-info text-amber-400 text-xl";
+            }
+
+            toast.classList.remove('translate-y-32');
+            setTimeout(() => {
+                toast.classList.add('translate-y-32');
+            }, 3000);
+        }
+
+        /* ==========================================================================
+           10. INITIALIZATION ON WINDOW LOAD
+           ========================================================================== */
+        window.onload = function() {
+            soundEngine.init();
+            initMockLeaderboardData();
+            startRoomTimer();
+            switchRole('home');
+        };
+    </script>
+</body>
+</html>
